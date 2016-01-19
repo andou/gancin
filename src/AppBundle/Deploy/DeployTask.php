@@ -83,6 +83,15 @@ class DeployTask {
    */
   protected $localdata;
 
+  /**
+   * Class constructor
+   * 
+   * @param \AppBundle\Deploy\Operations\Downloader $downloader
+   * @param \AppBundle\Deploy\Operations\Extractor $extractor
+   * @param \AppBundle\Deploy\Operations\Rsync $rsync
+   * @param \AppBundle\Deploy\Operations\Chown $chown
+   * @param \AppBundle\Deploy\Operations\Remover $remover
+   */
   function __construct(\AppBundle\Deploy\Operations\Downloader $downloader, \AppBundle\Deploy\Operations\Extractor $extractor, \AppBundle\Deploy\Operations\Rsync $rsync, \AppBundle\Deploy\Operations\Chown $chown, \AppBundle\Deploy\Operations\Remover $remover) {
     $this->downloader = $downloader;
     $this->extractor = $extractor;
@@ -91,6 +100,11 @@ class DeployTask {
     $this->remover = $remover;
   }
 
+  /**
+   * Performs a deploy task
+   * 
+   * @param string $branch
+   */
   public function run($branch = NULL) {
     $this->configureDownloader($branch);
     $tarball = $this->download();
@@ -98,12 +112,14 @@ class DeployTask {
     $this->syncFolders($extract_folder);
     $this->setPermission();
     $this->clean($extract_folder);
+    $this->clean($tarball);
   }
 
-  protected function download() {
-    return $this->downloader->run();
-  }
-
+  /**
+   * Configure the downloader in order to retrieve the correct tarball
+   * 
+   * @param string $branch
+   */
   protected function configureDownloader($branch = NULL) {
     if (empty($branch)) {
       $branch = $this->project->getDefaultBranch();
@@ -126,35 +142,87 @@ class DeployTask {
             ->setUrl($this->project->getRepository()->getUrl() . "/$branch");
   }
 
+  /**
+   * Downloads the tarball
+   * 
+   * @return string
+   */
+  protected function download() {
+    return $this->downloader->run();
+  }
+
+  /**
+   * Extract a tarball
+   * 
+   * @param string $tarball
+   * @return string
+   */
   protected function extract($tarball) {
     return $this->extractor->setFile($tarball)->setDestination($this->localdata->getExtractDir())->run();
   }
 
+  /**
+   * Syncs folders
+   * 
+   * @param type $source_folder
+   * @return type
+   */
   protected function syncFolders($source_folder) {
     return $this->rsync->setExtractDir($source_folder . '/')->setAppPath($this->localdata->getAppPath())->run();
   }
 
+  /**
+   * Sets permissions
+   */
   protected function setPermission() {
     $this->chown->setFile($this->localdata->getAppPath())->setUser($this->localdata->getUser())->run();
   }
 
+  /**
+   * Deletes files and/or directories
+   * 
+   * @param type $extract_folder
+   * @return type
+   */
   protected function clean($extract_folder) {
     return $this->remover->setFile($extract_folder)->run();
   }
 
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  /////////////////////////////////////////  GETTER AND SETTER  //////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  /**
+   * 
+   * @return type
+   */
   public function getProject() {
     return $this->project;
   }
 
+  /**
+   * 
+   * @param \AppBundle\Models\Project $project
+   * @return \AppBundle\Deploy\DeployTask
+   */
   public function setProject(\AppBundle\Models\Project $project) {
     $this->project = $project;
     return $this;
   }
 
+  /**
+   * 
+   * @return type
+   */
   public function getLocaldata() {
     return $this->localdata;
   }
 
+  /**
+   * 
+   * @param \AppBundle\Models\LocalData $localdata
+   * @return \AppBundle\Deploy\DeployTask
+   */
   public function setLocaldata(\AppBundle\Models\LocalData $localdata) {
     $this->localdata = $localdata;
     return $this;
