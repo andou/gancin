@@ -1,6 +1,6 @@
 <?php
 
-namespace AppBundle\Operations;
+namespace AppBundle\Deploy\Operations;
 
 /*
  * To change this template, choose Tools | Templates

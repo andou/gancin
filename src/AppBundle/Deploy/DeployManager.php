@@ -18,31 +18,31 @@ class DeployManager {
 
   /**
    *
-   * @var \AppBundle\Operations\Downloader
+   * @var \AppBundle\Deploy\Operations\Downloader
    */
   protected $downloader;
 
   /**
    *
-   * @var \AppBundle\Operations\Extractor
+   * @var \AppBundle\Deploy\Operations\Extractor
    */
   protected $extractor;
 
   /**
    *
-   * @var \AppBundle\Operations\Rsync
+   * @var \AppBundle\Deploy\Operations\Rsync
    */
   protected $rsync;
 
   /**
    *
-   * @var \AppBundle\Operations\Chown
+   * @var \AppBundle\Deploy\Operations\Chown
    */
   protected $chown;
 
   /**
    *
-   * @var \AppBundle\Operations\Remover
+   * @var \AppBundle\Deploy\Operations\Remover
    */
   protected $remover;
 
@@ -58,7 +58,7 @@ class DeployManager {
    */
   protected $localdata;
 
-  function __construct(\AppBundle\Operations\Downloader $downloader, \AppBundle\Operations\Extractor $extractor, \AppBundle\Operations\Rsync $rsync, \AppBundle\Operations\Chown $chown, \AppBundle\Operations\Remover $remover) {
+  function __construct(\AppBundle\Deploy\Operations\Downloader $downloader, \AppBundle\Deploy\Operations\Extractor $extractor, \AppBundle\Deploy\Operations\Rsync $rsync, \AppBundle\Deploy\Operations\Chown $chown, \AppBundle\Deploy\Operations\Remover $remover) {
     $this->downloader = $downloader;
     $this->extractor = $extractor;
     $this->rsync = $rsync;

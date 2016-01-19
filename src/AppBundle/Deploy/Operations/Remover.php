@@ -1,13 +1,13 @@
 <?php
 
-namespace AppBundle\Operations;
+namespace AppBundle\Deploy\Operations;
 
 /**
  * Description of Extractor
  *
  * @author andou
  */
-class Chown {
+class Remover {
 
   /**
    *
@@ -16,17 +16,30 @@ class Chown {
   protected $file;
 
   /**
-   *
-   * @var type 
-   */
-  protected $user;
-
-  /**
    * 
    */
   public function run() {
-    $command = sprintf('chown -R  %s %s', $this->user, $this->file);
-    return exec($command);
+    if (is_dir($this->file)) {
+      return $this->rrmdir($this->file);
+    } else {
+      return unlink($this->file);
+    }
+  }
+
+  protected function rrmdir($dir) {
+    if (is_dir($dir)) {
+      $objects = scandir($dir);
+      foreach ($objects as $object) {
+        if ($object != "." && $object != "..") {
+          if (filetype($dir . "/" . $object) == "dir")
+            $this->rrmdir($dir . "/" . $object);
+          else
+            unlink($dir . "/" . $object);
+        }
+      }
+      reset($objects);
+      return rmdir($dir);
+    }
   }
 
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -47,15 +60,6 @@ class Chown {
    */
   public function setFile($file) {
     $this->file = $file;
-    return $this;
-  }
-
-  public function getUser() {
-    return $this->user;
-  }
-
-  public function setUser($user) {
-    $this->user = $user;
     return $this;
   }
 

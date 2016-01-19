@@ -1,6 +1,6 @@
 <?php
 
-namespace AppBundle\Operations;
+namespace AppBundle\Deploy\Operations;
 
 /**
  * Description of Extractor

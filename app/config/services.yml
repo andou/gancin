@@ -8,12 +8,12 @@ services:
        class: AppBundle\Deploy\DeployManager
        arguments: ["@app.operations.downloader","@app.operations.extractor","@app.operations.rsync","@app.operations.chown","@app.operations.remover"]
       app.operations.downloader:
-       class: AppBundle\Operations\Downloader
+       class: AppBundle\Deploy\Operations\Downloader
       app.operations.extractor:
-       class: AppBundle\Operations\Extractor
+       class: AppBundle\Deploy\Operations\Extractor
       app.operations.rsync:
-       class: AppBundle\Operations\Rsync
+       class: AppBundle\Deploy\Operations\Rsync
       app.operations.remover:
-       class: AppBundle\Operations\Remover
+       class: AppBundle\Deploy\Operations\Remover
       app.operations.chown:
-       class: AppBundle\Operations\Chown
+       class: AppBundle\Deploy\Operations\Chown
