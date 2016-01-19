@@ -58,6 +58,12 @@ class LocalData {
   protected $user;
 
   /**
+   *
+   * @var string
+   */
+  protected $rsyncexclude = FALSE;
+
+  /**
    * 
    * @return type
    */
@@ -99,6 +105,15 @@ class LocalData {
 
   public function setUser($user) {
     $this->user = $user;
+    return $this;
+  }
+
+  public function getRsyncexclude() {
+    return $this->rsyncexclude;
+  }
+
+  public function setRsyncexclude($rsyncexclude) {
+    $this->rsyncexclude = $rsyncexclude;
     return $this;
   }
 

@@ -107,6 +107,9 @@ class ConfigurationManager {
       $localdata->setAppPath($project_data['local_data']['app_path']);
       $localdata->setExtractDir($project_data['local_data']['extract_dir']);
       $localdata->setUser($project_data['local_data']['user']);
+      if (isset($project_data['local_data']['rsync_exclude'])) {
+        $localdata->setRsyncexclude($project_data['local_data']['rsync_exclude']);
+      }
       return $localdata;
     }
     return FALSE;

@@ -168,6 +168,9 @@ class DeployTask {
    * @return type
    */
   protected function syncFolders($source_folder) {
+    if ($this->localdata->getRsyncexclude()) {
+      $this->rsync->setExcludeFrom($this->localdata->getRsyncexclude());
+    }
     return $this->rsync->setExtractDir($source_folder . '/')->setAppPath($this->localdata->getAppPath())->run();
   }
 
