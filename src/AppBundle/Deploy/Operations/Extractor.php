@@ -41,18 +41,20 @@ class Extractor {
 
   /**
    *
-   * @var type 
+   * @var string 
    */
   protected $file;
 
   /**
    *
-   * @var type 
+   * @var string 
    */
   protected $destination;
 
   /**
+   * Extract a tarball
    * 
+   * @return boolean
    */
   public function run() {
     $command = sprintf('tar -zxvf "%s" --directory "%s"', $this->file, $this->destination);

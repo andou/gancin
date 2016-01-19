@@ -59,7 +59,7 @@ class Downloader {
 
   /**
    *
-   * @var type 
+   * @var string 
    */
   protected $destination;
 
@@ -88,7 +88,9 @@ class Downloader {
   protected $downloaded_file;
 
   /**
-   * curl -u 'gitmama:gitmama12' -L -o $TARBALL https://api.github.com/repos/bitmama-reply/orosaiwa-website/tarball/master
+   * Downloads a project tarball
+   * 
+   * @return string
    */
   public function run() {
     $ch = curl_init($this->url);
@@ -113,7 +115,7 @@ class Downloader {
   }
 
   /**
-   * TARBALL=/tmp/agnona-$(date +%Y%m%d-%H%M%S).tar.gz
+   * Composes the destination file name
    * 
    * @return string
    */
@@ -122,10 +124,24 @@ class Downloader {
     return $this->downloaded_file;
   }
 
+  /**
+   * Returns the destionation file name
+   * 
+   * @return string
+   */
   public function getDownloadedFile() {
     return $this->downloaded_file;
   }
 
+  /**
+   * Should show the progress bar
+   * 
+   * @param type $resource
+   * @param type $download_size
+   * @param type $downloaded
+   * @param type $upload_size
+   * @param type $uploaded
+   */
   public function progress($resource, $download_size, $downloaded, $upload_size, $uploaded) {
     ob_start();
     if ($download_size > 0)

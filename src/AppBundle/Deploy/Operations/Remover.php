@@ -46,7 +46,9 @@ class Remover {
   protected $file;
 
   /**
+   * Deletes a file or a directory
    * 
+   * @return type
    */
   public function run() {
     if (is_dir($this->file)) {
@@ -56,6 +58,12 @@ class Remover {
     }
   }
 
+  /**
+   * Recursively delete all the contents within a directory
+   * 
+   * @param type $dir
+   * @return type
+   */
   protected function rrmdir($dir) {
     if (is_dir($dir)) {
       $objects = scandir($dir);

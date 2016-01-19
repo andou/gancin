@@ -40,19 +40,23 @@ namespace AppBundle\Deploy\Operations;
 class Chown {
 
   /**
+   * The file on which to perform the chown
    *
-   * @var type 
+   * @var string 
    */
   protected $file;
 
   /**
+   * User for which to grant the chown
    *
-   * @var type 
+   * @var string 
    */
   protected $user;
 
   /**
+   * Performs a chown operation
    * 
+   * @return string
    */
   public function run() {
     $command = sprintf('chown -R  %s %s', $this->user, $this->file);
@@ -64,7 +68,7 @@ class Chown {
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   /**
    * 
-   * @return type
+   * @return string
    */
   public function getFile() {
     return $this->file;
@@ -72,7 +76,7 @@ class Chown {
 
   /**
    * 
-   * @param \AppBundle\Models\type $file
+   * @param string $file
    * @return \AppBundle\Models\Extractor
    */
   public function setFile($file) {
@@ -80,10 +84,19 @@ class Chown {
     return $this;
   }
 
+  /**
+   * 
+   * @return string
+   */
   public function getUser() {
     return $this->user;
   }
 
+  /**
+   * 
+   * @param string $user
+   * @return \AppBundle\Deploy\Operations\Chown
+   */
   public function setUser($user) {
     $this->user = $user;
     return $this;
