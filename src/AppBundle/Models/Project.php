@@ -26,7 +26,7 @@ class Project {
    *
    * @var string 
    */
-  protected $default_branch;
+  protected $default_branch = NULL;
 
   /**
    *

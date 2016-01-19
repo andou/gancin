@@ -17,6 +17,12 @@ class LocalData {
   protected $app_path;
 
   /**
+   *
+   * @var string
+   */
+  protected $user;
+
+  /**
    * 
    * @return type
    */
@@ -49,6 +55,15 @@ class LocalData {
    */
   public function setAppPath($app_path) {
     $this->app_path = $app_path;
+    return $this;
+  }
+
+  public function getUser() {
+    return $this->user;
+  }
+
+  public function setUser($user) {
+    $this->user = $user;
     return $this;
   }
 

@@ -19,13 +19,13 @@ class Repository {
    *
    * @var string
    */
-  protected $user = FALSE;
+  protected $user = NULL;
 
   /**
    *
    * @var string
    */
-  protected $password = FALSE;
+  protected $password = NULL;
 
   /**
    * 
