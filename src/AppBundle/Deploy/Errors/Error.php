@@ -104,7 +104,7 @@ class Error {
   const RSYNC_OPERATION_ERROR_CODE = 1;
 
   public static function RSYNC_OPERATION_ERROR($message) {
-    return new Error(self::RSYNC_OPERATION_ERROR_CODE, $message);
+    return new Error(self::RSYNC_OPERATION_ERROR_CODE, "Rsync operation error: ".$message);
   }
 
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////

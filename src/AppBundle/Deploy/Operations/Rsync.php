@@ -98,7 +98,7 @@ class Rsync {
     }
     $return_val = null;
     $output = array();
-    exec(sprintf("%s %s%s %s %s", $command, $options, $exclude, $this->extract_dir, $this->app_path), $output, $return_val);
+    exec(sprintf("%s %s%s %s %s > /dev/null 2>&1", $command, $options, $exclude, $this->extract_dir, $this->app_path), $output, $return_val);
     if ($return_val) {
       throw new RsyncOperationErrorException($this->mapExitCode($return_val), $return_val);
     }
