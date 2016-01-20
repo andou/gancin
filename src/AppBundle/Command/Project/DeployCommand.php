@@ -79,5 +79,5 @@ class DeployCommand extends ContainerAwareCommand {
         $output->writeln(sprintf('<error>%s</error>', $error->getMessage()));
     }
   }
-
+  
 }

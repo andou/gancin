@@ -84,6 +84,12 @@ class DeployTask {
   protected $localdata;
 
   /**
+   *
+   * @var boolean
+   */
+  protected $silent_download = FALSE;
+
+  /**
    * Class constructor
    * 
    * @param \AppBundle\Deploy\Operations\Downloader $downloader
@@ -139,7 +145,9 @@ class DeployTask {
     $this->downloader
             ->setName($this->project->getName())
             ->setDestination($this->localdata->getExtractDir())
-            ->setUrl($this->project->getRepository()->getUrl() . "/$branch");
+            ->setUrl($this->project->getRepository()->getUrl() . "/$branch")
+            ->setProgress(!$this->silent_download);
+    ;
   }
 
   /**
@@ -228,6 +236,24 @@ class DeployTask {
    */
   public function setLocaldata(\AppBundle\Models\LocalData $localdata) {
     $this->localdata = $localdata;
+    return $this;
+  }
+
+  /**
+   * 
+   * @return boolean
+   */
+  public function getSilentDownload() {
+    return $this->silent_download;
+  }
+
+  /**
+   * 
+   * @param boolean $silent
+   * @return \AppBundle\Deploy\DeployTask
+   */
+  public function setSilentDownload($silent) {
+    $this->silent_download = $silent;
     return $this;
   }
 

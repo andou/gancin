@@ -81,7 +81,7 @@ class Downloader {
    *
    * @var boolean 
    */
-  protected $progress = FALSE;
+  protected $progress = TRUE;
 
   /**
    *
@@ -107,7 +107,6 @@ class Downloader {
     }
     curl_setopt($ch, CURLOPT_USERAGENT, self::$user_agent);
     if ($this->progress) {
-      curl_setopt($ch, CURLOPT_PROGRESSFUNCTION, array($this, 'progress'));
       curl_setopt($ch, CURLOPT_NOPROGRESS, FALSE);
     }
     curl_exec($ch);
@@ -139,24 +138,6 @@ class Downloader {
    */
   public function getDownloadedFile() {
     return $this->downloaded_file;
-  }
-
-  /**
-   * Should show the progress bar
-   * 
-   * @param type $resource
-   * @param type $download_size
-   * @param type $downloaded
-   * @param type $upload_size
-   * @param type $uploaded
-   */
-  public function progress($resource, $download_size, $downloaded, $upload_size, $uploaded) {
-    ob_start();
-    if ($download_size > 0)
-      echo $downloaded / $download_size * 100;
-    ob_flush();
-    flush();
-    sleep(1); // just to see effect
   }
 
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
