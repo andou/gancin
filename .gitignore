@@ -16,3 +16,4 @@
 /web/bundles/
 composer.phar
 app/Resources/config/config.json
+app/Resources/config/rsync_exclude*.txt

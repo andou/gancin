@@ -33,6 +33,7 @@
 namespace AppBundle\Deploy;
 
 use AppBundle\Deploy\Errors\Error;
+use AppBundle\Deploy\Exceptions\RsyncFileDoesNotExistsExeption;
 
 /**
  * Deploy Manager
@@ -59,14 +60,20 @@ class DeployManager {
   }
 
   public function deploy($project_name, $branch) {
-    $project = $this->configuration_manager->getProject($project_name);
+
+    try {
+      $project = $this->configuration_manager->getProject($project_name);
+    } catch (RsyncFileDoesNotExistsExeption $e) {
+      $this->addError(Error::RSYNC_FILE_DOES_NOT_EXISTS());
+      return;
+    }
     if ($project) {
       $this->deploy_task
               ->setProject($project)
               ->setLocaldata($project->getLocaldata())
               ->run($branch);
     } else {
-      $this->addError(Error::WrongProjectName());
+      $this->addError(Error::WRONG_PROJECT_NAME());
     }
   }
 
@@ -74,9 +81,9 @@ class DeployManager {
     return $this->configuration_manager->getAllProjects();
   }
 
-  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  ///////////////////////////////////////////  ERROR HANDLING  ///////////////////////////////////////////////////
-  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////  ERROR HANDLING  ///////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   /**
    *

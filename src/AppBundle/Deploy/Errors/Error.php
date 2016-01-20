@@ -69,8 +69,15 @@ class Error {
   const WRONG_PROJECT_NAME_CODE = 1;
   const WRONG_PROJECT_NAME_MESSAGE = 'Specified project name does not exists';
 
-  public static function WrongProjectName() {
+  public static function WRONG_PROJECT_NAME() {
     return new Error(self::WRONG_PROJECT_NAME_CODE, self::WRONG_PROJECT_NAME_MESSAGE);
+  }
+
+  const RSYNC_FILE_DOES_NOT_EXISTS_CODE = 1;
+  const RSYNC_FILE_DOES_NOT_EXISTS_MESSAGE = 'Missing rsync file';
+
+  public static function RSYNC_FILE_DOES_NOT_EXISTS() {
+    return new Error(self::RSYNC_FILE_DOES_NOT_EXISTS_CODE, self::RSYNC_FILE_DOES_NOT_EXISTS_MESSAGE);
   }
 
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////

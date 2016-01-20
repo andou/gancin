@@ -36,6 +36,7 @@ use \AppKernel;
 use AppBundle\Models\Repository;
 use AppBundle\Models\Project;
 use AppBundle\Models\LocalData;
+use AppBundle\Deploy\Exceptions\RsyncFileDoesNotExistsExeption;
 
 /**
  * App Configuration Manager
@@ -121,14 +122,22 @@ class ConfigurationManager {
       $localdata->setExtractDir($project_data['local_data']['extract_dir']);
       $localdata->setUser($project_data['local_data']['user']);
       if (isset($project_data['local_data']['rsync_exclude'])) {
-        $localdata->setRsyncexclude($project_data['local_data']['rsync_exclude']);
+        $rsync_file = $this->getFilePath($project_data['local_data']['rsync_exclude']);
+        if (!file_exists($rsync_file)) {
+          throw new RsyncFileDoesNotExistsExeption;
+        }
+        $localdata->setRsyncexclude();
       }
       return $localdata;
     }
     return FALSE;
   }
 
+  /**
+   * 
+   */
   protected function parseConfFile() {
+    $this->getFilePath($this->file);
     $file_name = sprintf("%s/%s", $this->kernel->getRootDir(), $this->file);
     if (file_exists($file_name)) {
       $decode = json_decode(file_get_contents($file_name), TRUE);
@@ -136,6 +145,15 @@ class ConfigurationManager {
         $this->conf = $decode;
       }
     }
+  }
+
+  /**
+   * 
+   * @param type $filename
+   * @return type
+   */
+  protected function getFilePath($filename) {
+    return sprintf("%s/%s", $this->kernel->getRootDir(), $filename);
   }
 
 }
