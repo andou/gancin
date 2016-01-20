@@ -37,6 +37,7 @@ use AppBundle\Deploy\Exceptions\RsyncFileDoesNotExistsException;
 use AppBundle\Deploy\Exceptions\AppPathFolderDoesNotExistsException;
 use AppBundle\Deploy\Exceptions\ExtractFolderDoesNotExistsException;
 use AppBundle\Deploy\Exceptions\RepositoryNotFoundException;
+use AppBundle\Deploy\Exceptions\RsyncOperationErrorException;
 
 /**
  * Deploy Manager
@@ -86,6 +87,9 @@ class DeployManager {
                 ->run($branch);
       } catch (RepositoryNotFoundException $e) {
         $this->addError(Error::REPOSITORY_NOT_FOUND());
+        return;
+      } catch (RsyncOperationErrorException $e) {
+        $this->addError(Error::RSYNC_OPERATION_ERROR($e->getMessage()));
         return;
       }
     } else {

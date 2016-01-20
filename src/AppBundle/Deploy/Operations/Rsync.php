@@ -32,6 +32,8 @@
 
 namespace AppBundle\Deploy\Operations;
 
+use AppBundle\Deploy\Exceptions\RsyncOperationErrorException;
+
 /**
  * Rsync operation
  * 
@@ -58,6 +60,33 @@ class Rsync {
   protected $app_path;
 
   /**
+   *
+   * @var array
+   */
+  protected $exit_codes = array(
+      "0" => "Success",
+      "1" => "Syntax or usage error",
+      "2" => "Protocol incompatibility",
+      "3" => "Errors selecting input/output files, dirs",
+      "4" => "Requested  action not supported: an attempt was made to manipulate 64-bit files on a platform that cannot support them; or an option was specified that is supported by the client and not by the server.",
+      "5" => "Error starting client-server protocol",
+      "6" => "Daemon unable to append to log-file",
+      "10" => "Error in socket I/O",
+      "11" => "Error in file I/O",
+      "12" => "Error in rsync protocol data stream",
+      "13" => "Errors with program diagnostics",
+      "14" => "Error in IPC code",
+      "20" => "Received SIGUSR1 or SIGINT",
+      "21" => "Some error returned by waitpid()",
+      "22" => "Error allocating core memory buffers",
+      "23" => "Partial transfer due to error",
+      "24" => "Partial transfer due to vanished source files",
+      "25" => "The --max-delete limit stopped deletions",
+      "30" => "Timeout in data send/receive",
+      "35" => "Timeout waiting for daemon connection",
+  );
+
+  /**
    * Performs an rsync
    */
   public function run() {
@@ -67,7 +96,13 @@ class Rsync {
     if ($this->exclude_from) {
       $exclude = sprintf(" --exclude-from=%s", $this->exclude_from);
     }
-    return exec(sprintf("%s %s%s %s %s", $command, $options, $exclude, $this->extract_dir, $this->app_path));
+    $return_val = null;
+    $output = array();
+    exec(sprintf("%s %s%s %s %s", $command, $options, $exclude, $this->extract_dir, $this->app_path), $output, $return_val);
+    if ($return_val) {
+      throw new RsyncOperationErrorException($this->mapExitCode($return_val), $return_val);
+    }
+    return $output;
   }
 
   /**
@@ -122,6 +157,10 @@ class Rsync {
   public function setExcludeFrom($exclude_from) {
     $this->exclude_from = $exclude_from;
     return $this;
+  }
+
+  protected function mapExitCode($code) {
+    return $this->exit_codes[(string) $code];
   }
 
   //rsync -a --progress --compress --delete --exclude-from=/root/scripts/orosaiwa/deploy/rsync_exclude.txt $DIREXTRACT/ $APPPATH/
