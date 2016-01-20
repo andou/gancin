@@ -223,7 +223,7 @@ class DeployTask {
    * @return type
    */
   protected function grunt() {
-    return $this->grunt->setFile($this->localdata->getAppPath())->run();
+    return $this->grunt->setFolder($this->localdata->getAppPath())->run();
   }
 
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
