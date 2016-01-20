@@ -71,6 +71,18 @@ class ConfigurationManager {
 
   /**
    * 
+   * @return array
+   */
+  public function getAllProjects() {
+    $res = array();
+    foreach ($this->conf['projects'] as $project_name => $proj) {
+      $res[] = $this->getProject($project_name);
+    }
+    return $res;
+  }
+
+  /**
+   * 
    * @param string $project_name
    * @return \AppBundle\Models\Project
    */
@@ -90,6 +102,7 @@ class ConfigurationManager {
         $project->setDefaultBranch($project_data['project']['default_branch']);
       }
       $project->setRepository($repo);
+      $project->setLocaldata($this->getLocalData($project_name));
       return $project;
     }
     return FALSE;

@@ -61,7 +61,7 @@ class LocalData {
    *
    * @var string
    */
-  protected $rsyncexclude = FALSE;
+  protected $rsyncexclude = NULL;
 
   /**
    * 
@@ -115,6 +115,10 @@ class LocalData {
   public function setRsyncexclude($rsyncexclude) {
     $this->rsyncexclude = $rsyncexclude;
     return $this;
+  }
+
+  public function __toString() {
+    return sprintf("App path: [%s] extract dir: [%s] user: [%s] rsync_exclude: [%s]", $this->app_path, $this->extract_dir, $this->user, isset($this->rsyncexclude) ? $this->rsyncexclude : 'no');
   }
 
 }

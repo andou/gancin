@@ -60,6 +60,12 @@ class Project {
   protected $repository;
 
   /**
+   *
+   * @var \AppBundle\Models\LocalData
+   */
+  protected $localdata;
+
+  /**
    * 
    * @return string
    */
@@ -102,6 +108,28 @@ class Project {
   public function setRepository(\AppBundle\Models\Repository $repository) {
     $this->repository = $repository;
     return $this;
+  }
+
+  /**
+   * 
+   * @return \AppBundle\Models\LocalData
+   */
+  public function getLocaldata() {
+    return $this->localdata;
+  }
+
+  /**
+   * 
+   * @param \AppBundle\Models\LocalData $localdata
+   * @return \AppBundle\Models\Project
+   */
+  public function setLocaldata(\AppBundle\Models\LocalData $localdata) {
+    $this->localdata = $localdata;
+    return $this;
+  }
+
+  public function __toString() {
+    return sprintf("Project: [%s] default branch: [%s]", $this->name, isset($this->default_branch) ? $this->default_branch : "no");
   }
 
 }

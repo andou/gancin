@@ -30,43 +30,39 @@
  * @copyright MIT License (http://opensource.org/licenses/MIT)
  */
 
-namespace AppBundle\Deploy;
+namespace AppBundle\Command\Project;
+
+use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Deploy Manager
+ * Deploy command
  * 
  *  @author Antonio Pastorino <antonio.pastorino@gmail.com>
  */
-class DeployManager {
+class ListCommand extends ContainerAwareCommand {
 
-  /**
-   *
-   * @var \AppBundle\Deploy\DeployTask
-   */
-  protected $deploy_task;
-
-  /**
-   *
-   * @var \AppBundle\Configuration\ConfigurationManager
-   */
-  protected $configuration_manager;
-
-  function __construct(\AppBundle\Deploy\DeployTask $deploy_task, \AppBundle\Configuration\ConfigurationManager $configuration_manager) {
-    $this->deploy_task = $deploy_task;
-    $this->configuration_manager = $configuration_manager;
+  protected function configure() {
+    $this
+            ->setName('project:list')
+            ->setDescription('List available projects')
+    ;
   }
 
-  public function deploy($project_name, $branch) {
-    $project = $this->configuration_manager->getProject($project_name);
-    $this->deploy_task
-            ->setProject($project)
-            ->setLocaldata($project->getLocaldata())
-            ->run($branch);
-  }
+  protected function execute(InputInterface $input, OutputInterface $output) {
+    $deploymanager = $this->getContainer()->get('app.deploy.manager');
+    $projects = $deploymanager->listProjects();
 
-  public function listProjects() {
-    return $this->configuration_manager->getAllProjects();
+    $output->writeln("There are currently: " . count($projects) . " projects");
+    $output->writeln("");
+    $output->writeln("----");
+    foreach ($projects as $project) {
+      $output->writeln((string) $project);
+      $output->writeln((string) $project->getRepository());
+      $output->writeln((string) $project->getLocalData());
+      $output->writeln("----");
+    }
   }
 
 }
-

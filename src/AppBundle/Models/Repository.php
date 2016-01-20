@@ -93,5 +93,14 @@ class Repository {
     return $this;
   }
 
+  public function __toString() {
+    $using_password = isset($this->user) && isset($this->password) ? 'yes' : 'no';
+    $res = sprintf("Repo: [%s] using password: [%s] ", $this->url, $using_password);
+    if ($using_password == 'yes') {
+      $res.=" {$this->user}:{$this->password}";
+    }
+    return $res;
+  }
+
 }
 
