@@ -73,6 +73,12 @@ class DeployTask {
 
   /**
    *
+   * @var \AppBundle\Deploy\Operations\Grunt
+   */
+  protected $grunt;
+
+  /**
+   *
    * @var \AppBundle\Models\Project
    */
   protected $project;
@@ -90,6 +96,12 @@ class DeployTask {
   protected $silent_download = FALSE;
 
   /**
+   *
+   * @var boolean
+   */
+  protected $usegrunt = FALSE;
+
+  /**
    * Class constructor
    * 
    * @param \AppBundle\Deploy\Operations\Downloader $downloader
@@ -97,13 +109,15 @@ class DeployTask {
    * @param \AppBundle\Deploy\Operations\Rsync $rsync
    * @param \AppBundle\Deploy\Operations\Chown $chown
    * @param \AppBundle\Deploy\Operations\Remover $remover
+   * @param \AppBundle\Deploy\Operations\Grunt $grunt
    */
-  function __construct(\AppBundle\Deploy\Operations\Downloader $downloader, \AppBundle\Deploy\Operations\Extractor $extractor, \AppBundle\Deploy\Operations\Rsync $rsync, \AppBundle\Deploy\Operations\Chown $chown, \AppBundle\Deploy\Operations\Remover $remover) {
+  function __construct(\AppBundle\Deploy\Operations\Downloader $downloader, \AppBundle\Deploy\Operations\Extractor $extractor, \AppBundle\Deploy\Operations\Rsync $rsync, \AppBundle\Deploy\Operations\Chown $chown, \AppBundle\Deploy\Operations\Remover $remover, \AppBundle\Deploy\Operations\Grunt $grunt) {
     $this->downloader = $downloader;
     $this->extractor = $extractor;
     $this->rsync = $rsync;
     $this->chown = $chown;
     $this->remover = $remover;
+    $this->grunt = $grunt;
   }
 
   /**
@@ -119,6 +133,9 @@ class DeployTask {
     $this->setPermission();
     $this->clean($extract_folder);
     $this->clean($tarball);
+    if ($this->usegrunt) {
+      $this->grunt();
+    }
   }
 
   /**
@@ -199,6 +216,16 @@ class DeployTask {
     return $this->remover->setFile($extract_folder)->run();
   }
 
+  /**
+   * Runs grunt
+   * 
+   * @param type $extract_folder
+   * @return type
+   */
+  protected function grunt() {
+    return $this->grunt->setFile($this->localdata->getAppPath())->run();
+  }
+
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   /////////////////////////////////////////  GETTER AND SETTER  //////////////////////////////////////////////////
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -254,6 +281,16 @@ class DeployTask {
    */
   public function setSilentDownload($silent) {
     $this->silent_download = $silent;
+    return $this;
+  }
+
+  /**
+   * 
+   * @param boolean $usegrunt
+   * @return \AppBundle\Deploy\DeployTask
+   */
+  public function setUsegrunt($usegrunt) {
+    $this->usegrunt = $usegrunt;
     return $this;
   }
 

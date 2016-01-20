@@ -65,7 +65,7 @@ class DeployManager {
     $this->configuration_manager = $configuration_manager;
   }
 
-  public function deploy($project_name, $branch, $silent_download = FALSE) {
+  public function deploy($project_name, $branch, $usegrunt = FALSE, $silent_download = FALSE) {
 
     try {
       $project = $this->configuration_manager->getProject($project_name);
@@ -86,6 +86,7 @@ class DeployManager {
                 ->setProject($project)
                 ->setLocaldata($project->getLocaldata())
                 ->setSilentDownload($silent_download)
+                ->setUsegrunt($usegrunt)
                 ->run($branch);
       } catch (RepositoryNotFoundException $e) {
         $this->addError(Error::REPOSITORY_NOT_FOUND());

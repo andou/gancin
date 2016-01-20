@@ -36,6 +36,7 @@ use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Input\InputOption;
 
 /**
  * Deploy command
@@ -54,6 +55,9 @@ class DeployCommand extends ContainerAwareCommand {
             ->addArgument(
                     'branch', InputArgument::OPTIONAL, 'If set, we will deploy this instead of a default one'
             )
+            ->addOption(
+                    'grunt', null, InputOption::VALUE_NONE, 'If set, after the deploy grunt will be ran'
+            )
     ;
   }
 
@@ -67,10 +71,14 @@ class DeployCommand extends ContainerAwareCommand {
       $output->writeln('Deploying [' . $name . '] with [default branch]');
       $branch = NULL;
     }
+    $usegrunt = FALSE;
+    if ($input->getOption('grunt')) {
+      $usegrunt = TRUE;
+    }
 
 
     $deploymanager = $this->getContainer()->get('app.deploy.manager');
-    $deploymanager->deploy($name, $branch);
+    $deploymanager->deploy($name, $branch, $usegrunt);
 
     if (!$deploymanager->hasErrors()) {
       $output->writeln('Done!');
@@ -79,5 +87,5 @@ class DeployCommand extends ContainerAwareCommand {
         $output->writeln(sprintf('<error>%s</error>', $error->getMessage()));
     }
   }
-  
+
 }
