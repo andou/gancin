@@ -32,6 +32,8 @@
 
 namespace AppBundle\Deploy\Operations;
 
+use AppBundle\Deploy\Exceptions\ChownOperationErrorException;
+
 /**
  * Chown operation
  * 
@@ -60,7 +62,13 @@ class Chown {
    */
   public function run() {
     $command = sprintf('chown -R  %s %s', $this->user, $this->file);
-    return exec($command);
+    $return_val = null;
+    $output = array();
+    exec($command, $output, $return_val);
+    if ($return_val) {
+      throw new ChownOperationErrorException();
+    }
+    return $output;
   }
 
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////

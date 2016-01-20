@@ -39,6 +39,7 @@ use AppBundle\Deploy\Exceptions\ExtractFolderDoesNotExistsException;
 use AppBundle\Deploy\Exceptions\RepositoryNotFoundException;
 use AppBundle\Deploy\Exceptions\RsyncOperationErrorException;
 use AppBundle\Deploy\Exceptions\ExtractorOperationErrorException;
+use AppBundle\Deploy\Exceptions\ChownOperationErrorException;
 
 /**
  * Deploy Manager
@@ -94,6 +95,9 @@ class DeployManager {
         return;
       } catch (ExtractorOperationErrorException $e) {
         $this->addError(Error::EXTRACTOR_OPERATION_ERROR($e->getMessage()));
+        return;
+      } catch (ChownOperationErrorException $e) {
+        $this->addError(Error::CHOWN_OPERATION_ERROR());
         return;
       }
     } else {
