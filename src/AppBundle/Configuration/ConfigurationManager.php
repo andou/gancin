@@ -36,9 +36,9 @@ use \AppKernel;
 use AppBundle\Models\Repository;
 use AppBundle\Models\Project;
 use AppBundle\Models\LocalData;
-use AppBundle\Deploy\Exceptions\RsyncFileDoesNotExistsExeption;
-use AppBundle\Deploy\Exceptions\AppPathFolderDoesNotExistsExeption;
-use AppBundle\Deploy\Exceptions\ExtractFolderDoesNotExistsExeption;
+use AppBundle\Deploy\Exceptions\RsyncFileDoesNotExistsException;
+use AppBundle\Deploy\Exceptions\AppPathFolderDoesNotExistsException;
+use AppBundle\Deploy\Exceptions\ExtractFolderDoesNotExistsException;
 
 /**
  * App Configuration Manager
@@ -125,12 +125,12 @@ class ConfigurationManager {
       $localdata->setAppPath($project_data['local_data']['app_path']);
       $localdata->setExtractDir($project_data['local_data']['extract_dir']);
       $localdata->setUser($project_data['local_data']['user']);
-      if (isset($project_data['local_data']['rsync_exclude'])) {
+      if (!empty($project_data['local_data']['rsync_exclude'])) {
         $rsync_file = $this->getFilePath($project_data['local_data']['rsync_exclude']);
         if (!file_exists($rsync_file)) {
-          throw new RsyncFileDoesNotExistsExeption;
+          throw new RsyncFileDoesNotExistsException;
         }
-        $localdata->setRsyncexclude();
+        $localdata->setRsyncexclude($rsync_file);
       }
       return $localdata;
     }
@@ -139,10 +139,10 @@ class ConfigurationManager {
 
   public function checkFolders($project_data) {
     if (!file_exists($project_data['local_data']['app_path'])) {
-      throw new AppPathFolderDoesNotExistsExeption;
+      throw new AppPathFolderDoesNotExistsException;
     }
     if (!file_exists($project_data['local_data']['extract_dir'])) {
-      throw new ExtractFolderDoesNotExistsExeption;
+      throw new ExtractFolderDoesNotExistsException;
     }
   }
 

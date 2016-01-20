@@ -32,6 +32,8 @@
 
 namespace AppBundle\Deploy\Operations;
 
+use AppBundle\Deploy\Exceptions\RepositoryNotFoundException;
+
 /**
  * Downloader operation
  * 
@@ -109,6 +111,12 @@ class Downloader {
       curl_setopt($ch, CURLOPT_NOPROGRESS, FALSE);
     }
     curl_exec($ch);
+
+    $info = curl_getinfo($ch);
+    if (!isset($info['http_code']) || $info['http_code'] != 200) {
+      throw new RepositoryNotFoundException();
+    }
+
     curl_close($ch);
     fclose($fp);
     return $this->downloaded_file;

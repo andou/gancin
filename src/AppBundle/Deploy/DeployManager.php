@@ -33,9 +33,10 @@
 namespace AppBundle\Deploy;
 
 use AppBundle\Deploy\Errors\Error;
-use AppBundle\Deploy\Exceptions\RsyncFileDoesNotExistsExeption;
-use AppBundle\Deploy\Exceptions\AppPathFolderDoesNotExistsExeption;
-use AppBundle\Deploy\Exceptions\ExtractFolderDoesNotExistsExeption;
+use AppBundle\Deploy\Exceptions\RsyncFileDoesNotExistsException;
+use AppBundle\Deploy\Exceptions\AppPathFolderDoesNotExistsException;
+use AppBundle\Deploy\Exceptions\ExtractFolderDoesNotExistsException;
+use AppBundle\Deploy\Exceptions\RepositoryNotFoundException;
 
 /**
  * Deploy Manager
@@ -65,21 +66,27 @@ class DeployManager {
 
     try {
       $project = $this->configuration_manager->getProject($project_name);
-    } catch (RsyncFileDoesNotExistsExeption $e) {
+    } catch (RsyncFileDoesNotExistsException $e) {
       $this->addError(Error::RSYNC_FILE_DOES_NOT_EXISTS());
       return;
-    } catch (ExtractFolderDoesNotExistsExeption $e) {
+    } catch (ExtractFolderDoesNotExistsException $e) {
       $this->addError(Error::EXTRACT_FOLDER_DOES_NOT_EXISTS());
       return;
-    } catch (AppPathFolderDoesNotExistsExeption $e) {
+    } catch (AppPathFolderDoesNotExistsException $e) {
       $this->addError(Error::APP_PATH_FOLDER_DOES_NOT_EXISTS());
       return;
     }
+
     if ($project) {
-      $this->deploy_task
-              ->setProject($project)
-              ->setLocaldata($project->getLocaldata())
-              ->run($branch);
+      try {
+        $this->deploy_task
+                ->setProject($project)
+                ->setLocaldata($project->getLocaldata())
+                ->run($branch);
+      } catch (RepositoryNotFoundException $e) {
+        $this->addError(Error::REPOSITORY_NOT_FOUND());
+        return;
+      }
     } else {
       $this->addError(Error::WRONG_PROJECT_NAME());
     }

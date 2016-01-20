@@ -37,6 +37,6 @@ namespace AppBundle\Deploy\Exceptions;
  *
  * @author Antonio Pastorino <antonio.pastorino@gmail.com>
  */
-class AppPathFolderDoesNotExistsExeption extends \Exception {
+class ExtractFolderDoesNotExistsException extends \Exception {
   
 }

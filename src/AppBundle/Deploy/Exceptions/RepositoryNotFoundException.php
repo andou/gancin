@@ -37,6 +37,6 @@ namespace AppBundle\Deploy\Exceptions;
  *
  * @author Antonio Pastorino <antonio.pastorino@gmail.com>
  */
-class RsyncFileDoesNotExistsExeption extends \Exception {
+class RepositoryNotFoundException extends \Exception {
   
 }
