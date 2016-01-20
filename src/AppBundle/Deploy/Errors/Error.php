@@ -30,83 +30,87 @@
  * @copyright MIT License (http://opensource.org/licenses/MIT)
  */
 
-namespace AppBundle\Deploy;
-
-use AppBundle\Deploy\Errors\Error;
+namespace AppBundle\Deploy\Errors;
 
 /**
- * Deploy Manager
+ * Chown operation
  * 
  *  @author Antonio Pastorino <antonio.pastorino@gmail.com>
  */
-class DeployManager {
+class Error {
 
   /**
    *
-   * @var \AppBundle\Deploy\DeployTask
+   * @var string
    */
-  protected $deploy_task;
+  protected $code;
 
   /**
    *
-   * @var \AppBundle\Configuration\ConfigurationManager
+   * @var string
    */
-  protected $configuration_manager;
+  protected $message;
 
-  function __construct(\AppBundle\Deploy\DeployTask $deploy_task, \AppBundle\Configuration\ConfigurationManager $configuration_manager) {
-    $this->deploy_task = $deploy_task;
-    $this->configuration_manager = $configuration_manager;
-  }
-
-  public function deploy($project_name, $branch) {
-    $project = $this->configuration_manager->getProject($project_name);
-    if ($project) {
-      $this->deploy_task
-              ->setProject($project)
-              ->setLocaldata($project->getLocaldata())
-              ->run($branch);
-    } else {
-      $this->addError(Error::WrongProjectName());
-    }
-  }
-
-  public function listProjects() {
-    return $this->configuration_manager->getAllProjects();
+  /**
+   * Class constructor
+   * 
+   * @param type $code
+   * @param type $message
+   */
+  function __construct($code, $message) {
+    $this->code = $code;
+    $this->message = $message;
   }
 
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  ///////////////////////////////////////////  ERROR HANDLING  ///////////////////////////////////////////////////
+  /////////////////////////////////////////////  FACTORY  /////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  const WRONG_PROJECT_NAME_CODE = 1;
+  const WRONG_PROJECT_NAME_MESSAGE = 'Specified project name does not exists';
+
+  public static function WrongProjectName() {
+    return new Error(self::WRONG_PROJECT_NAME_CODE, self::WRONG_PROJECT_NAME_MESSAGE);
+  }
+
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  /////////////////////////////////////////  GETTER AND SETTER  //////////////////////////////////////////////////
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   /**
-   *
-   * @var array
-   */
-  protected $errors = array();
-
-  /**
    * 
-   * @param AppBundle\Deploy\Errors\Error $error
+   * @return string
    */
-  protected function addError(Error $error) {
-    $this->errors[] = $error;
+  public function getCode() {
+    return $this->code;
   }
 
   /**
    * 
-   * @return array
+   * @param string $code
+   * @return \AppBundle\Deploy\Errors\Error
    */
-  public function getErrors() {
-    return $this->errors;
+  protected function setCode($code) {
+    $this->code = $code;
+    return $this;
   }
 
   /**
    * 
-   * @return boolean
+   * @return string
    */
-  public function hasErrors() {
-    return (boolean) count($this->errors);
+  public function getMessage() {
+    return $this->message;
+  }
+
+  /**
+   * 
+   * @param string $message
+   * @return \AppBundle\Deploy\Errors\Error
+   */
+  protected function setMessage($message) {
+    $this->message = $message;
+    return $this;
   }
 
 }
-

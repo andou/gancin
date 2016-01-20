@@ -71,6 +71,13 @@ class DeployCommand extends ContainerAwareCommand {
 
     $deploymanager = $this->getContainer()->get('app.deploy.manager');
     $deploymanager->deploy($name, $branch);
+
+    if (!$deploymanager->hasErrors()) {
+      $output->writeln('Done!');
+    } else {
+      foreach ($deploymanager->getErrors() as $error)
+        $output->writeln(sprintf('<error>%s</error>', $error->getMessage()));
+    }
   }
 
 }
