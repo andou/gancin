@@ -12,7 +12,7 @@ services:
        arguments: ["@app.deploy.task","@app.configuration.manager"]
       app.deploy.task:
        class: AppBundle\Deploy\DeployTask
-       arguments: ["@app.operations.downloader","@app.operations.extractor","@app.operations.rsync","@app.operations.chown","@app.operations.remover"]
+       arguments: ["@app.operations.downloader","@app.operations.extractor","@app.operations.rsync","@app.operations.chown","@app.operations.remover","@app.operations.grunt"]
       app.operations.downloader:
        class: AppBundle\Deploy\Operations\Downloader
       app.operations.extractor:
@@ -23,3 +23,5 @@ services:
        class: AppBundle\Deploy\Operations\Remover
       app.operations.chown:
        class: AppBundle\Deploy\Operations\Chown
+      app.operations.grunt:
+       class: AppBundle\Deploy\Operations\Grunt
