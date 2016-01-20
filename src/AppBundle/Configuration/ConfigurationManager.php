@@ -37,6 +37,8 @@ use AppBundle\Models\Repository;
 use AppBundle\Models\Project;
 use AppBundle\Models\LocalData;
 use AppBundle\Deploy\Exceptions\RsyncFileDoesNotExistsExeption;
+use AppBundle\Deploy\Exceptions\AppPathFolderDoesNotExistsExeption;
+use AppBundle\Deploy\Exceptions\ExtractFolderDoesNotExistsExeption;
 
 /**
  * App Configuration Manager
@@ -117,6 +119,8 @@ class ConfigurationManager {
   public function getLocalData($project_name) {
     if (isset($this->conf['projects'][$project_name])) {
       $project_data = $this->conf['projects'][$project_name];
+      $this->checkFolders($project_data);
+      //
       $localdata = new LocalData();
       $localdata->setAppPath($project_data['local_data']['app_path']);
       $localdata->setExtractDir($project_data['local_data']['extract_dir']);
@@ -131,6 +135,15 @@ class ConfigurationManager {
       return $localdata;
     }
     return FALSE;
+  }
+
+  public function checkFolders($project_data) {
+    if (!file_exists($project_data['local_data']['app_path'])) {
+      throw new AppPathFolderDoesNotExistsExeption;
+    }
+    if (!file_exists($project_data['local_data']['extract_dir'])) {
+      throw new ExtractFolderDoesNotExistsExeption;
+    }
   }
 
   /**

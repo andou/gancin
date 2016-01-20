@@ -34,6 +34,8 @@ namespace AppBundle\Deploy;
 
 use AppBundle\Deploy\Errors\Error;
 use AppBundle\Deploy\Exceptions\RsyncFileDoesNotExistsExeption;
+use AppBundle\Deploy\Exceptions\AppPathFolderDoesNotExistsExeption;
+use AppBundle\Deploy\Exceptions\ExtractFolderDoesNotExistsExeption;
 
 /**
  * Deploy Manager
@@ -65,6 +67,12 @@ class DeployManager {
       $project = $this->configuration_manager->getProject($project_name);
     } catch (RsyncFileDoesNotExistsExeption $e) {
       $this->addError(Error::RSYNC_FILE_DOES_NOT_EXISTS());
+      return;
+    } catch (ExtractFolderDoesNotExistsExeption $e) {
+      $this->addError(Error::EXTRACT_FOLDER_DOES_NOT_EXISTS());
+      return;
+    } catch (AppPathFolderDoesNotExistsExeption $e) {
+      $this->addError(Error::APP_PATH_FOLDER_DOES_NOT_EXISTS());
       return;
     }
     if ($project) {

@@ -80,6 +80,20 @@ class Error {
     return new Error(self::RSYNC_FILE_DOES_NOT_EXISTS_CODE, self::RSYNC_FILE_DOES_NOT_EXISTS_MESSAGE);
   }
 
+  const APP_PATH_FOLDER_DOES_NOT_EXISTS_CODE = 1;
+  const APP_PATH_FOLDER_DOES_NOT_EXISTS_MESSAGE = 'App path folder does not exists';
+
+  public static function APP_PATH_FOLDER_DOES_NOT_EXISTS() {
+    return new Error(self::APP_PATH_FOLDER_DOES_NOT_EXISTS_CODE, self::APP_PATH_FOLDER_DOES_NOT_EXISTS_MESSAGE);
+  }
+
+  const EXTRACT_FOLDER_DOES_NOT_EXISTS_CODE = 1;
+  const EXTRACT_FOLDER_DOES_NOT_EXISTS_MESSAGE = 'Extract folder does not exists';
+
+  public static function EXTRACT_FOLDER_DOES_NOT_EXISTS() {
+    return new Error(self::EXTRACT_FOLDER_DOES_NOT_EXISTS_CODE, self::EXTRACT_FOLDER_DOES_NOT_EXISTS_MESSAGE);
+  }
+
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   /////////////////////////////////////////  GETTER AND SETTER  //////////////////////////////////////////////////
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
