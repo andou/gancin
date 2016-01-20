@@ -104,7 +104,13 @@ class Error {
   const RSYNC_OPERATION_ERROR_CODE = 1;
 
   public static function RSYNC_OPERATION_ERROR($message) {
-    return new Error(self::RSYNC_OPERATION_ERROR_CODE, "Rsync operation error: ".$message);
+    return new Error(self::RSYNC_OPERATION_ERROR_CODE, "Rsync operation error: " . $message);
+  }
+
+  const EXTRACTOR_OPERATION_ERROR_CODE = 1;
+
+  public static function EXTRACTOR_OPERATION_ERROR($message) {
+    return new Error(self::EXTRACTOR_OPERATION_ERROR_CODE, "Extractor operation error: " . $message);
   }
 
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////

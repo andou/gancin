@@ -32,6 +32,8 @@
 
 namespace AppBundle\Deploy\Operations;
 
+use AppBundle\Deploy\Exceptions\ExtractorOperationErrorException;
+
 /**
  * Extractor operation
  * 
@@ -52,13 +54,28 @@ class Extractor {
   protected $destination;
 
   /**
+   *
+   * @var array
+   */
+  protected $exit_codes = array(
+      "0" => "Success",
+      "1" => "Some files differ",
+      "2" => "Fatal error",
+  );
+
+  /**
    * Extract a tarball
    * 
    * @return boolean
    */
   public function run() {
     $command = sprintf('tar -zxvf "%s" --directory "%s"', $this->file, $this->destination);
-    $out = exec($command);
+    $return_val = null;
+    $output = array();
+    $out = exec($command, $output, $return_val);
+    if ($return_val) {
+      throw new ExtractorOperationErrorException($this->mapExitCode($return_val), $return_val);
+    }
     $destination = pathinfo($out);
     if (isset($destination['dirname'])) {
       $dirname = $destination['dirname'];
@@ -106,6 +123,10 @@ class Extractor {
   public function setDestination($destination) {
     $this->destination = $destination;
     return $this;
+  }
+
+  protected function mapExitCode($code) {
+    return $this->exit_codes[(string) $code];
   }
 
 }
