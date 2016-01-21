@@ -40,6 +40,7 @@ use AppBundle\Deploy\Exceptions\RepositoryNotFoundException;
 use AppBundle\Deploy\Exceptions\RsyncOperationErrorException;
 use AppBundle\Deploy\Exceptions\ExtractorOperationErrorException;
 use AppBundle\Deploy\Exceptions\ChownOperationErrorException;
+use Monolog\Logger;
 
 /**
  * Deploy Manager
@@ -60,13 +61,20 @@ class DeployManager {
    */
   protected $configuration_manager;
 
-  function __construct(\AppBundle\Deploy\DeployTask $deploy_task, \AppBundle\Configuration\ConfigurationManager $configuration_manager) {
+  /**
+   *
+   * @var Monolog\Logger 
+   */
+  protected $logger;
+
+  function __construct(\AppBundle\Deploy\DeployTask $deploy_task, \AppBundle\Configuration\ConfigurationManager $configuration_manager, Logger $logger) {
     $this->deploy_task = $deploy_task;
     $this->configuration_manager = $configuration_manager;
+    $this->logger = $logger;
   }
 
   public function deploy($project_name, $branch, $usegrunt = FALSE, $silent_download = FALSE) {
-
+    $this->log("Deploying |$project_name|");
     try {
       $project = $this->configuration_manager->getProject($project_name);
     } catch (RsyncFileDoesNotExistsException $e) {
@@ -104,10 +112,20 @@ class DeployManager {
     } else {
       $this->addError(Error::WRONG_PROJECT_NAME());
     }
+    $this->log("Done Without Errors");
   }
 
   public function listProjects() {
+    $this->log("Listing projects");
     return $this->configuration_manager->getAllProjects();
+  }
+
+  protected function log($message, $error = FALSE) {
+    if ($error) {
+      $this->logger->error($message);
+    } else {
+      $this->logger->info($message);
+    }
   }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -126,6 +144,7 @@ class DeployManager {
    */
   protected function addError(Error $error) {
     $this->errors[] = $error;
+    $this->log($error->getMessage(), TRUE);
   }
 
   /**

@@ -9,7 +9,7 @@ services:
        arguments: ["@kernel","%app.config.file%"]
       app.deploy.manager:
        class: AppBundle\Deploy\DeployManager
-       arguments: ["@app.deploy.task","@app.configuration.manager"]
+       arguments: ["@app.deploy.task","@app.configuration.manager","@logger"]
       app.deploy.task:
        class: AppBundle\Deploy\DeployTask
        arguments: ["@app.operations.downloader","@app.operations.extractor","@app.operations.rsync","@app.operations.chown","@app.operations.remover","@app.operations.grunt"]
