@@ -1,0 +1,25 @@
+parameters:
+      app.config.file: Resources/config/config.json
+
+services:
+      app.configuration.manager:
+       class: AppBundle\Configuration\ConfigurationManager
+       arguments: ["@kernel","%app.config.file%"]
+      app.deploy.manager:
+       class: AppBundle\Deploy\DeployManager
+       arguments: ["@app.deploy.task","@app.configuration.manager","@logger"]
+      app.deploy.task:
+       class: AppBundle\Deploy\DeployTask
+       arguments: ["@app.operations.downloader","@app.operations.extractor","@app.operations.rsync","@app.operations.chown","@app.operations.remover","@app.operations.grunt"]
+      app.operations.downloader:
+       class: AppBundle\Deploy\Operations\Downloader
+      app.operations.extractor:
+       class: AppBundle\Deploy\Operations\Extractor
+      app.operations.rsync:
+       class: AppBundle\Deploy\Operations\Rsync
+      app.operations.remover:
+       class: AppBundle\Deploy\Operations\Remover
+      app.operations.chown:
+       class: AppBundle\Deploy\Operations\Chown
+      app.operations.grunt:
+       class: AppBundle\Deploy\Operations\Grunt
