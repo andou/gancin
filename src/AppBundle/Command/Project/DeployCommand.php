@@ -50,7 +50,7 @@ class DeployCommand extends ContainerAwareCommand {
             ->setName('project:deploy')
             ->setDescription('Deploys a project')
             ->addArgument(
-                    'name', InputArgument::REQUIRED, 'Project you want to deploy'
+                    'name', InputArgument::OPTIONAL, 'Project you want to deploy'
             )
             ->addArgument(
                     'branch', InputArgument::OPTIONAL, 'If set, we will deploy this instead of a default one'
@@ -62,7 +62,21 @@ class DeployCommand extends ContainerAwareCommand {
   }
 
   protected function execute(InputInterface $input, OutputInterface $output) {
+    $deploymanager = $this->getContainer()->get('app.deploy.manager');
     $name = $input->getArgument('name');
+    if (!$name) {
+      $output->writeln(sprintf('<error>%s</error>', "Missing project name parameter"));
+      $projects = $deploymanager->listProjects();
+      if (count($projects)) {
+        $output->writeln(sprintf('<comment>%s</comment>', "Available projects are:"));
+        foreach ($projects as $p) {
+          $output->writeln(sprintf('<comment>%s</comment>', $p->getName()));
+        }
+      } else {
+        $output->writeln(sprintf('<comment>%s</comment>', "No projects available"));
+      }
+      return;
+    }
 
     $branch = $input->getArgument('branch');
     if ($branch) {
@@ -77,7 +91,7 @@ class DeployCommand extends ContainerAwareCommand {
     }
 
 
-    $deploymanager = $this->getContainer()->get('app.deploy.manager');
+
     $deploymanager->deploy($name, $branch, $usegrunt);
 
     if (!$deploymanager->hasErrors()) {
