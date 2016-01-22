@@ -128,6 +128,27 @@ class DeployManager {
     }
   }
 
+  /**
+   * 
+   * @todo Ritornare nome del progetto sulla base del nome del repo recuperandolo dalla info in config.json
+   * @param string $repo
+   * @return string
+   */
+  public function getProjectFromRepo($repo) {
+    return "";
+  }
+
+  /**
+   * 
+   * @todo Check su config.json per controllare se è autorizzato il deploy remoto del progetto con il branch indicato
+   * @param string $project
+   * @param string $branch
+   * @return boolean
+   */
+  public function remoteDeployAllowed($project, $branch) {
+    return FALSE;
+  }
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////  ERROR HANDLING  ///////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
