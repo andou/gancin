@@ -1,6 +1,14 @@
-php-deployer
+Gancin
 ============
-
-A Symfony project created on January 19, 2016, 11:35 am.
+A Symfony based application to manage CI from git repositories.
+### Abstract
+Gancin has been created to manage command-line deploys and CI integration via [Github WebHooks](https://developer.github.com/v3/repos/hooks/).
+### Command line
+```
+php bin/console project:list
+```
+```
+php bin/console project:deploy <project_name> <branch> [--grunt]
+```
 ### Todo
-error handling, logs, hooks and custom deploy procedures
+Deploy scheduling, tests, command line project add
