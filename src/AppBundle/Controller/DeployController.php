@@ -8,7 +8,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use AppBundle\Deploy\Events\Github;
 
-class DefaultController extends Controller {
+class DeployController extends Controller {
 
   /**
    *
@@ -17,19 +17,9 @@ class DefaultController extends Controller {
   protected $deploymanager = NULL;
 
   /**
-   * @Route("/", name="homepage")
-   */
-  public function indexAction(Request $request) {
-// replace this example code with whatever you need
-    return $this->render('default/index.html.twig', [
-                'base_dir' => realpath($this->container->getParameter('kernel.root_dir') . '/..'),
-    ]);
-  }
-
-  /**
    * @Route("/deploy-git", name="deploy-git")
    */
-  public function deployAction(Request $request) {
+  public function indexAction(Request $request) {
     $this->initResponse();
     $deploymanager = $this->getDeployManager();
     $github_event = new Github($request);
@@ -77,11 +67,6 @@ class DefaultController extends Controller {
                         ->out(Response::HTTP_FORBIDDEN);
       }
     }
-
-    //REMOVE ME
-    return $this->responseSuccess(TRUE)
-                    ->out(Response::HTTP_OK);
-    //REMOVE ME
 
     $deploymanager->deploy($project, $ref_name, $deploymanager->remoteDeployUseGrunt($project));
     if (!$deploymanager->hasErrors()) {
