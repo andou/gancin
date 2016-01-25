@@ -130,23 +130,45 @@ class DeployManager {
 
   /**
    * 
-   * @todo Ritornare nome del progetto sulla base del nome del repo recuperandolo dalla info in config.json
    * @param string $repo
    * @return string
    */
   public function getProjectFromRepo($repo) {
-    return "";
+    return $this->configuration_manager->getLocalNameFromRemoteName($repo);
   }
 
   /**
    * 
-   * @todo Check su config.json per controllare se è autorizzato il deploy remoto del progetto con il branch indicato
    * @param string $project
+   * @param string $type
    * @param string $branch
    * @return boolean
    */
-  public function remoteDeployAllowed($project, $branch) {
+  public function remoteDeployAllowed($project, $type, $branch) {
+    $local_project = $this->configuration_manager->getProject($project);
+    if ($local_project->getLocaldata()->getRemote()) {
+      $events = $local_project->getLocaldata()->getRemoteEvents();
+      switch ($type) {
+        case Events\Github::GITHUB_REF_TAG_TYPE:
+          return in_array($type, $events);
+          break;
+        case Events\Github::GITHUB_REF_BRANCH_TYPE:
+        default :
+          $allowed_branches = $local_project->getLocaldata()->getRemoteBranches();
+          return in_array($type, $events) && in_array($branch, $allowed_branches);
+          break;
+      }
+    }
     return FALSE;
+  }
+
+  /**
+   * 
+   * @param string $project
+   * @return boolean
+   */
+  public function remoteDeployUseGrunt($project) {
+    return $this->configuration_manager->getProject($project)->getLocaldata()->getRemoteGrunt();
   }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////

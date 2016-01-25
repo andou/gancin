@@ -66,6 +66,18 @@ class ConfigurationManager {
    */
   protected $kernel;
 
+  /**
+   *
+   * @var array
+   */
+  protected $local_datas = NULL;
+
+  /**
+   *
+   * @var array
+   */
+  protected $local_projects = NULL;
+
   function __construct(AppKernel $kernel, $file) {
     $this->file = $file;
     $this->kernel = $kernel;
@@ -85,11 +97,53 @@ class ConfigurationManager {
   }
 
   /**
+   * Returns a local project name from a remote repo name
+   * 
+   * @param string $remote_name
+   * @return string|boolean
+   */
+  public function getLocalNameFromRemoteName($remote_name) {
+    foreach ($this->getAllProjects() as $project) {
+      $_rn = $project->getLocaldata()->getRemoteName();
+      if ($_rn == $remote_name) {
+        return $project->getName();
+      }
+    }
+    return FALSE;
+  }
+
+  /**
+   * Caching wrapper for getting projects
    * 
    * @param string $project_name
    * @return \AppBundle\Models\Project
    */
   public function getProject($project_name) {
+    if (!isset($this->local_projects[$project_name])) {
+      $this->local_projects[$project_name] = $this->_getProject($project_name);
+    }
+    return $this->local_projects[$project_name];
+  }
+
+  /**
+   * Caching wrapper for getting local datas
+   * 
+   * @param string $project_name
+   * @return \AppBundle\Models\LocalData
+   */
+  public function getLocalData($project_name) {
+    if (!isset($this->local_datas [$project_name])) {
+      $this->local_datas [$project_name] = $this->_getLocalData($project_name);
+    }
+    return $this->local_datas [$project_name];
+  }
+
+  /**
+   * 
+   * @param string $project_name
+   * @return \AppBundle\Models\Project
+   */
+  protected function _getProject($project_name) {
     if (isset($this->conf['projects'][$project_name])) {
       $project_data = $this->conf['projects'][$project_name];
 
@@ -116,7 +170,7 @@ class ConfigurationManager {
    * @param string $project_name
    * @return \AppBundle\Models\LocalData
    */
-  public function getLocalData($project_name) {
+  protected function _getLocalData($project_name) {
     if (isset($this->conf['projects'][$project_name])) {
       $project_data = $this->conf['projects'][$project_name];
       $this->checkFolders($project_data);

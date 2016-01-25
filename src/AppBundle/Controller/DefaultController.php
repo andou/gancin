@@ -37,8 +37,8 @@ class DefaultController extends Controller {
           $res['ref_type'] = $github_event->getRefType();
           $res['ref_name'] = $github_event->getRefName();
           $project = $deploymanager->getProjectFromRepo($res['repository_name']);
-          if ($deploymanager->remoteDeployAllowed($project, $res['ref_name'])) {
-            $deploymanager->deploy('wed', 'master', 'false');
+          if ($deploymanager->remoteDeployAllowed($project, $github_event->getRefType(), $res['ref_name'])) {
+            $deploymanager->deploy($project, $res['ref_name'], $deploymanager->remoteDeployUseGrunt($project));
             if (!$deploymanager->hasErrors()) {
               $response->setStatusCode(Response::HTTP_OK);
               $res['success'] = TRUE;
