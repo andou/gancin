@@ -64,6 +64,36 @@ class LocalData {
   protected $rsyncexclude = NULL;
 
   /**
+   *
+   * @var boolean
+   */
+  protected $remote = FALSE;
+
+  /**
+   *
+   * @var string
+   */
+  protected $remote_name;
+
+  /**
+   *
+   * @var array
+   */
+  protected $remote_events = array();
+
+  /**
+   *
+   * @var array
+   */
+  protected $remote_branches = array();
+
+  /**
+   *
+   * @var boolean
+   */
+  protected $remote_grunt = FALSE;
+
+  /**
    * 
    * @return type
    */
@@ -119,6 +149,51 @@ class LocalData {
 
   public function __toString() {
     return sprintf("App path: [%s] extract dir: [%s] user: [%s] rsync_exclude: [%s]", $this->app_path, $this->extract_dir, $this->user, isset($this->rsyncexclude) ? $this->rsyncexclude : 'no');
+  }
+
+  public function getRemote() {
+    return $this->remote;
+  }
+
+  public function setRemote($remote) {
+    $this->remote = $remote;
+    return $this;
+  }
+
+  public function getRemoteEvents() {
+    return $this->remote_events;
+  }
+
+  public function setRemoteEvents($remote_events) {
+    $this->remote_events = $remote_events;
+    return $this;
+  }
+
+  public function getRemoteBranches() {
+    return $this->remote_branches;
+  }
+
+  public function setRemoteBranches($remote_branches) {
+    $this->remote_branches = $remote_branches;
+    return $this;
+  }
+
+  public function getRemoteGrunt() {
+    return $this->remote_grunt;
+  }
+
+  public function setRemoteGrunt($remote_grunt) {
+    $this->remote_grunt = $remote_grunt;
+    return $this;
+  }
+
+  public function getRemoteName() {
+    return $this->remote_name;
+  }
+
+  public function setRemoteName($remote_name) {
+    $this->remote_name = $remote_name;
+    return $this;
   }
 
 }

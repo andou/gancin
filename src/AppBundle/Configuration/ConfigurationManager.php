@@ -132,6 +132,26 @@ class ConfigurationManager {
         }
         $localdata->setRsyncexclude($rsync_file);
       }
+
+      //REMOTE CONFIGURATIONS
+      if (!empty($project_data['remote_synch'])) {
+        if (!empty($project_data['remote_synch']["enabled"])) {
+          $localdata->setRemote($project_data['remote_synch']["enabled"]);
+          if (!empty($project_data['remote_synch']["name"])) {
+            $localdata->setRemoteName($project_data['remote_synch']["name"]);
+          }
+          if (!empty($project_data['remote_synch']["events"])) {
+            $localdata->setRemoteEvents($project_data['remote_synch']["events"]);
+          }
+          if (!empty($project_data['remote_synch']["branches"])) {
+            $localdata->setRemoteBranches($project_data['remote_synch']["branches"]);
+          }
+          if (!empty($project_data['remote_synch']["grunt"])) {
+            $localdata->setRemoteGrunt($project_data['remote_synch']["grunt"]);
+          }
+        }
+      }
+
       return $localdata;
     }
     return FALSE;
