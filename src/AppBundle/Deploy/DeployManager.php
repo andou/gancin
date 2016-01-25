@@ -171,6 +171,19 @@ class DeployManager {
     return $this->configuration_manager->getProject($project)->getLocaldata()->getRemoteGrunt();
   }
 
+  /**
+   * 
+   * @param string $project
+   * @return string
+   */
+  public function getRemoteSecret($project) {
+    return $this->configuration_manager->getProject($project)->getLocaldata()->getRemoteSecret();
+  }
+
+  public function hasRemoteSecret($project) {
+    return $this->configuration_manager->getProject($project)->getLocaldata()->hasSecret();
+  }
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////  ERROR HANDLING  ///////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////

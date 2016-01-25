@@ -94,6 +94,12 @@ class LocalData {
   protected $remote_grunt = FALSE;
 
   /**
+   *
+   * @var string
+   */
+  protected $remote_secret = FALSE;
+
+  /**
    * 
    * @return type
    */
@@ -148,7 +154,7 @@ class LocalData {
   }
 
   public function __toString() {
-    return sprintf("App path: [%s] extract dir: [%s] user: [%s] rsync_exclude: [%s]", $this->app_path, $this->extract_dir, $this->user, isset($this->rsyncexclude) ? $this->rsyncexclude : 'no');
+    return sprintf("App path: [%s] extract dir: [%s] user: [%s] rsync_exclude: [%s] remote name: [%s]", $this->app_path, $this->extract_dir, $this->user, isset($this->rsyncexclude) ? $this->rsyncexclude : 'no', $this->remote_name);
   }
 
   public function getRemote() {
@@ -193,6 +199,19 @@ class LocalData {
 
   public function setRemoteName($remote_name) {
     $this->remote_name = $remote_name;
+    return $this;
+  }
+
+  public function hasSecret() {
+    return !empty($this->remote_secret);
+  }
+
+  public function getRemoteSecret() {
+    return $this->remote_secret;
+  }
+
+  public function setRemoteSecret($remote_secret) {
+    $this->remote_secret = $remote_secret;
     return $this;
   }
 

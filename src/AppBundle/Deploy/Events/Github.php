@@ -43,6 +43,7 @@ use Symfony\Component\HttpFoundation\Request;
 class Github {
 
   const GITHUB_EVENT_HEADER = "X-Github-Event";
+  const GITHUB_EVENT_SIGNATURE = 'X-Hub-Signature';
   const GITHUB_EVENT_PUSH = "push";
   const GITHUB_REF_BRANCH_TYPE = "heads";
   const GITHUB_REF_TAG_TYPE = "tags";
@@ -194,6 +195,46 @@ class Github {
    */
   public function isGithubPush() {
     return $this->isGithubEvent() && $this->getHeader(self::GITHUB_EVENT_HEADER) == self::GITHUB_EVENT_PUSH;
+  }
+
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  /////////////////////////////////////    HEADERS    ////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  /**
+   * 
+   * @param string $secret
+   * @return boolean
+   */
+  public function validateGithubSignature($secret) {
+    if ($this->hasGithubsignature()) {
+      $hubSignature = $this->getGithubSignature();
+      list($algo, $hash) = explode('=', $hubSignature, 2);
+      $payloadHash = hash_hmac($algo, file_get_contents('php://input'), $secret);
+      if ($hash !== $payloadHash) {
+        return FALSE;
+      } else {
+        return TRUE;
+      }
+    }
+    return FALSE;
+  }
+
+  /**
+   * 
+   * @return string
+   */
+  protected function getGithubSignature() {
+    return $this->getHeader(self::GITHUB_EVENT_SIGNATURE);
+  }
+
+  /**
+   * 
+   * @return boolean
+   */
+  protected function hasGithubsignature() {
+    $sign = $this->getGithubSignature();
+    return !empty($sign);
   }
 
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
