@@ -12,50 +12,18 @@ class DefaultController extends Controller {
 
   /**
    *
-   * @var array
+   * @var \AppBundle\Controller\AppBundle\Deploy\DeployManager
    */
-  protected $response_data = array();
-
-  /**
-   *
-   * @var Symfony\Component\HttpFoundation\Response
-   */
-  protected $response;
+  protected $deploymanager = NULL;
 
   /**
    * @Route("/", name="homepage")
    */
   public function indexAction(Request $request) {
-    // replace this example code with whatever you need
+// replace this example code with whatever you need
     return $this->render('default/index.html.twig', [
                 'base_dir' => realpath($this->container->getParameter('kernel.root_dir') . '/..'),
     ]);
-  }
-
-  protected function initResponse() {
-    $this->response = new Response();
-    $this->response->headers->set('Content-Type', 'application/json');
-    $this->response_data = array();
-  }
-
-  protected function responseSuccess($success) {
-    $this->response_data['success'] = $success;
-    return $this;
-  }
-
-  protected function setErrorData($value) {
-    return $this->setResponseData('error', $value);
-  }
-
-  protected function setResponseData($segment, $value) {
-    $this->response_data[$segment] = $value;
-    return $this;
-  }
-
-  protected function out($status_code) {
-    $this->response->setStatusCode($status_code);
-    $this->response->setContent(json_encode($this->response_data));
-    return $this->response;
   }
 
   /**
@@ -63,9 +31,10 @@ class DefaultController extends Controller {
    */
   public function deployAction(Request $request) {
     $this->initResponse();
-    $deploymanager = $this->get('app.deploy.manager');
+    $deploymanager = $this->getDeployManager();
     $github_event = new Github($request);
 
+//Checking formal request
     if ($request->getMethod() != 'POST') {
       return $this->responseSuccess(FALSE)
                       ->setErrorData('Not a POST request :(')
@@ -83,24 +52,19 @@ class DefaultController extends Controller {
                       ->out(Response::HTTP_BAD_REQUEST);
     }
 
-    $res = array();
-    $res['repository_name'] = $github_event->getRepositoryName();
-    $res['ref_type'] = $github_event->getRefType();
-    $res['ref_name'] = $github_event->getRefName();
-    $project = $deploymanager->getProjectFromRepo($res['repository_name']);
+//Retrieve information from request to match with local data
+    $deploy_request = $this->extractInfoFromRequest($github_event);
+    list($repository_name, $ref_type, $ref_name, $project) = array_values($deploy_request);
+    $this->populateResponseData($deploy_request);
 
-    $this->setResponseData('repository_name', $res['repository_name'])
-            ->setResponseData('ref_type', $res['ref_type'])
-            ->setResponseData('ref_name', $github_event->getRefName());
-
+//Check request against local data
     if (!$project) {
       return $this->responseSuccess(FALSE)
-                      ->setErrorData('Can\'t find the project: ' . $res['repository_name'])
+                      ->setErrorData('Can\'t find a project related to: ' . $repository_name)
                       ->out(Response::HTTP_NOT_ACCEPTABLE);
     }
-    $this->setResponseData('project_name', $project);
 
-    if (!$deploymanager->remoteDeployAllowed($project, $github_event->getRefType(), $res['ref_name'])) {
+    if (!$deploymanager->remoteDeployAllowed($project, $ref_type, $ref_name)) {
       return $this->responseSuccess(FALSE)
                       ->setErrorData('Remote deploy not allowed :(')
                       ->out(Response::HTTP_NOT_ACCEPTABLE);
@@ -114,8 +78,12 @@ class DefaultController extends Controller {
       }
     }
 
+    //REMOVE ME
+    return $this->responseSuccess(TRUE)
+                    ->out(Response::HTTP_OK);
+    //REMOVE ME
 
-    $deploymanager->deploy($project, $res['ref_name'], $deploymanager->remoteDeployUseGrunt($project));
+    $deploymanager->deploy($project, $ref_name, $deploymanager->remoteDeployUseGrunt($project));
     if (!$deploymanager->hasErrors()) {
       return $this->responseSuccess(TRUE)
                       ->out(Response::HTTP_OK);
@@ -130,6 +98,121 @@ class DefaultController extends Controller {
       return $this->out(Response::HTTP_INTERNAL_SERVER_ERROR);
     }
     return $this->out();
+  }
+
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////  SERVICES  ////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  /**
+   * Returns a deploy manager
+   * 
+   * @return \AppBundle\Controller\AppBundle\Deploy\DeployManager
+   */
+  protected function getDeployManager() {
+    if (!isset($this->deploymanager)) {
+      $this->deploymanager = $this->get('app.deploy.manager');
+    }
+    return $this->deploymanager;
+  }
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////  REQUEST MANAGEMENT  ///////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  /**
+   * 
+   * @param type $github_event
+   * @return type
+   */
+  protected function extractInfoFromRequest($github_event) {
+    $res = array();
+    $res['project_name'] = $repo_name = $github_event->getRepositoryName();
+    $res['repository_name'] = $github_event->getRefType();
+    $res['ref_type'] = $github_event->getRefName();
+    $res['ref_name'] = $this->getDeployManager()->getProjectFromRepo($repo_name);
+    return $res;
+  }
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////  RESPONSE MANAGEMENT  ///////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  /**
+   *
+   * @var array
+   */
+  protected $response_data = array();
+
+  /**
+   *
+   * @var Symfony\Component\HttpFoundation\Response
+   */
+  protected $response;
+
+  /**
+   * Initizialize the reponse of this controller
+   */
+  protected function initResponse() {
+    $this->response = new Response();
+    $this->response->headers->set('Content-Type', 'application/json');
+    $this->response_data = array();
+  }
+
+  /**
+   * Sets the success for this response
+   * 
+   * @param string $success
+   * @return \AppBundle\Controller\DefaultController
+   */
+  protected function responseSuccess($success) {
+    $this->response_data['success'] = $success;
+    return $this;
+  }
+
+  /**
+   * Populate the error data for the response
+   * 
+   * @param string $value
+   * @return \AppBundle\Controller\DefaultController
+   */
+  protected function setErrorData($value) {
+    return $this->setResponseData('error', $value);
+  }
+
+  /**
+   * 
+   * @param array $data
+   * @return \AppBundle\Controller\DefaultController
+   */
+  protected function populateResponseData($data) {
+    foreach ($data as $name => $value) {
+      $this->setResponseData($name, $value);
+    }
+    return $this;
+  }
+
+  /**
+   * Populates a segment of the JSON Response
+   * 
+   * @param string $segment
+   * @param string $value
+   * @return \AppBundle\Controller\DefaultController
+   */
+  protected function setResponseData($segment, $value) {
+    $this->response_data[$segment] = $value;
+    return $this;
+  }
+
+  /**
+   * Returns a response
+   * 
+   * @param int $status_code
+   * @return Symfony\Component\HttpFoundation\Response
+   */
+  protected function out($status_code) {
+    $this->response->setStatusCode($status_code);
+    $this->response->setContent(json_encode($this->response_data));
+    return $this->response;
   }
 
 }
