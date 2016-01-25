@@ -149,6 +149,8 @@ class ConfigurationManager {
 
       $repo = new Repository();
       $repo->setUrl($project_data['repo']['url']);
+      $repo->setReponame($project_data['repo']['name']);
+      $repo->setOwner($project_data['repo']['owner']);
       if (isset($project_data['repo']['user']) && isset($project_data['repo']['password'])) {
         $repo->setUser($project_data['repo']['user']);
         $repo->setPassword($project_data['repo']['password']);

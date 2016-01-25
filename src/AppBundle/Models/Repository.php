@@ -58,6 +58,18 @@ class Repository {
   protected $password = NULL;
 
   /**
+   *
+   * @var string
+   */
+  protected $owner;
+
+  /**
+   *
+   * @var string
+   */
+  protected $reponame;
+
+  /**
    * 
    * @return type
    */
@@ -90,6 +102,24 @@ class Repository {
 
   public function setPassword($password) {
     $this->password = $password;
+    return $this;
+  }
+
+  public function getOwner() {
+    return $this->owner;
+  }
+
+  public function setOwner($owner) {
+    $this->owner = $owner;
+    return $this;
+  }
+
+  public function getReponame() {
+    return $this->reponame;
+  }
+
+  public function setReponame($reponame) {
+    $this->reponame = $reponame;
     return $this;
   }
 
