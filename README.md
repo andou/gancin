@@ -22,11 +22,15 @@ Just to be sure, update it (this is not mandatory and with the above command you
 ```
 php composer.phar self-update
 ```
-Install all the dependencies (this could take while)
+Install all the dependencies (this could take a while)
 ```
 php composer.phar install
 ```
-
+Create your config file
+```
+cp app/Resources/config/config-sample.json app/Resources/config/config.json
+```
+Edit you config file and you can start using Gancin
 
 ### Command line
 You can easily deploy your projects with Gancin from command line.
