@@ -1,0 +1,47 @@
+{
+  "projects": {
+    "project.one": {
+      "repo": {
+        "name": "project.name",
+        "url": "https://tarball.uri (e.g. https://api.github.com/repos/:user/:project/tarball)",
+        "owner": ":user",
+        "user": ":user",
+        "password": ":password"
+      },
+      "project": {
+        "default_branch": "master"
+      },
+      "local_data": {
+        "app_path": "/var/www/your/project",
+        "extract_dir": "/tmp",
+        "user": "www-data:www-data",
+        "rsync_exclude": "Resources/config/your_rsync_exclude.txt",
+        "remote_synch": {
+          "name": "project.name (should be the github repo name)",
+          "enabled": true,
+          "events": ["heads", "tags"],
+          "branches": ["master"],
+          "grunt": false,
+          "secret": "your.github.secret"
+        }
+      }
+    },
+    "project.two": {
+      "repo": {
+        "name": "agnona2015",
+        "url": "https://tarball.uri (e.g. https://api.github.com/repos/:user/:project/tarball)",
+        "owner": ":user",
+        "user": ":user",
+        "password": ":password"
+      },
+      "project": {
+        "default_branch": "development"
+      },
+      "local_data": {
+        "app_path": "/var/www/your/project",
+        "extract_dir": "/tmp",
+        "user": "www-data:www-data"
+      }
+    }
+  }
+}
