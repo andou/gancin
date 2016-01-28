@@ -1,0 +1,14 @@
+parameters:
+    andou_gitstatus.api.url.base: https://status.github.com/api
+    andou_gitstatus.api.url.status: status.json
+    andou_gitstatus.api.url.messages: messages.json
+    andou_gitstatus.api.url.last: last-message.json
+    
+services:
+    andou_gitstatus.api:
+        class: Andou\GitstatusBundle\Api\GitStatusApi
+        arguments: ["%andou_gitstatus.api.url.base%","%andou_gitstatus.api.url.status%","%andou_gitstatus.api.url.messages%","%andou_gitstatus.api.url.last%"]
+    andou_gitstatus.styles:
+        class: Andou\GitstatusBundle\Output\OutputStyle
+    andou_gitstatus.renderer:
+        class: Andou\GitstatusBundle\Output\Renderer
