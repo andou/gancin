@@ -7,6 +7,8 @@ Gancin has been created to manage command-line deploys and CI integration via [G
 To run Gancin you need: php-cli and a linux/unix system with the following commands available: `rsync`,`chown`,`tar`. If you plan to use Gancin in a linux/unix machine chances are that you do not have to worry about.
 ### Installation
 Workin on this, available soon (I know, this is the most important part of a README)
+```
+git clone https://github.com/andou/gancin.git
 ### Command line
 You can easily deploy your projects with Gancin from command line.
 #### Deployments
