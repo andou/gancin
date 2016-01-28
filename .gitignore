@@ -15,5 +15,6 @@
 /vendor/
 /web/bundles/
 composer.phar
+composer.lock
 app/Resources/config/config.json
 app/Resources/config/rsync_exclude*.txt
